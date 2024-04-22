@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hajs Demo</title>
+  <script src="/dev/main.ts" type="module"></script>
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init();</script>
+</head>
+
+<body>
+  <div id="waves" class="grid grid-cols-2 lg:grid-cols-6 justify-center h-[100dvh] items-center place-items-center">
+    <button id="wave" class="border p-2 rounded-full">WaveWaveWave!</button>
+    <button id="wave" class="border p-2 rounded-full" data-color="#faa">Red Wave!</button>
+    <button id="wave" class="border p-2 rounded-full bg-orange-300">Background color</button>
+    <button id="wave" class="border p-2 rounded-full" style="background-image: url(https://picsum.photos/200)">Background Image</button>
+    <button id="wave" class="border p-2 rounded-full" data-duration="100">FastFastFastFastFast</button>
+    <button id="wave" class="border p-2 rounded-full" data-duration="1000">Slow</button>
+  </div>
+</body>
+
+</html>

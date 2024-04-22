@@ -1,0 +1,21 @@
+{
+  "name": "@ns/ha",
+  "exports": "./mod.ts",
+  "tasks": {
+    "dev": "deno run -A npm:vite --host"
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "esnext"
+    ]
+  },
+  "fmt": {
+    "semiColons": false,
+    "singleQuote": true
+  },
+  "imports": {
+    "tailwindcss": "npm:tailwindcss",
+    "autoprefixer": "npm:autoprefixer"
+  }
+}
