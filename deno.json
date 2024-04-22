@@ -1,6 +1,7 @@
 {
   "name": "@ns/ha",
   "exports": "./mod.ts",
+  "version": "0.1.0",
   "tasks": {
     "dev": "deno run -A npm:vite --host"
   },
