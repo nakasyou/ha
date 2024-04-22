@@ -36,8 +36,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1.1.4
       - name: Build
-        run: 
-        deno run -A npm:vite build --base=/ha/
+        run: deno run -A npm:vite build --base=/ha/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
