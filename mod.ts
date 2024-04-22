@@ -3,10 +3,16 @@
  * @module
  */
 
+/**
+ * Pick non undefined keys
+ */
 type NonUndefinedKeys<T> = {
   [K in keyof T]-?: undefined extends T[K] ? never : K
 }[keyof T]
 
+/**
+ * Settings
+ */
 interface Settings {
   /**
    * Target Element
@@ -32,6 +38,9 @@ interface Settings {
   color?: string
 }
 
+/**
+ * Wave interface
+ */
 interface Wave<T extends Settings> {
   /**
    * Extends settings
@@ -55,6 +64,9 @@ interface Wave<T extends Settings> {
   ): Promise<void>
 }
 
+/**
+ * Create wave
+ */
 export const wave = <T extends Settings>(settings?: T): Wave<T> => ({
   extend<U extends Settings>(extend: U) {
     return wave(
