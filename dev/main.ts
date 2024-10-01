@@ -1,5 +1,6 @@
 import { ha } from '../mod.ts'
 import './style.css'
+import { waveAsPointerDown } from '../events.ts'
 const buttons = document.getElementsByClassName('wave')
 
 const $waveDurationSetting = document.getElementById(
@@ -15,6 +16,14 @@ const $opacitySetting = document.getElementById(
   'setting-opacity',
 ) as HTMLInputElement
 
+for (const wave of Array.from(document.getElementsByClassName('pointer'))) {
+  (wave as HTMLElement).onpointerdown = waveAsPointerDown(ha({
+    color: 'black',
+    opacity: 0.3,
+    waveDuration: 300,
+    gooutDuration: 100,
+  }))
+}
 for (const btn of Array.from(buttons)) {
   if (!(btn instanceof HTMLButtonElement)) {
     throw new Error('button is not HTMLButtonElement')
