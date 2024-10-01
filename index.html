@@ -11,13 +11,41 @@
 </head>
 
 <body>
-  <div id="waves" class="grid grid-cols-2 lg:grid-cols-6 justify-center h-[100dvh] items-center place-items-center">
-    <button id="wave" class="border p-2 rounded-full">WaveWaveWave!</button>
-    <button id="wave" class="border p-2 rounded-full" data-color="#faa">Red Wave!</button>
-    <button id="wave" class="border p-2 rounded-full bg-orange-300">Background color</button>
-    <button id="wave" class="border p-2 rounded-full" style="background-image: url(https://picsum.photos/200)">Background Image</button>
-    <button id="wave" class="border p-2 rounded-full" data-duration="100">FastFastFastFastFast</button>
-    <button id="wave" class="border p-2 rounded-full" data-duration="1000">Slow</button>
+  <div class="flex flex-col justify-around h-[100dvh]">
+    <div>
+      <div class="text-2xl text-center">
+        <span class="font-mono">@ns/ha </span>
+        Playground
+      </div>
+      <div class="flex justify-center gap-2">
+        <a href="https://github.com/nakasyou/ha" class="underline hover:no-underline">GitHub</a>
+        <a href="https://jsr.io/@ns/ha" class="underline hover:no-underline">JSR</a>
+      </div>
+    </div>
+    <div class="flex gap-2 justify-around flex-wrap">
+      <label>
+        waveDuration
+        <input type="range" min="0" max="1000" value="200" id="setting-waveDuration" />
+      </label>
+      <label>
+        gooutDuration
+        <input type="range" min="0" max="1000" value="200" id="setting-gooutDuration" />
+      </label>
+      <label>
+        color
+        <input type="color" value="#aaaaaa" id="setting-color" />
+      </label>
+      <label>
+        opacity
+        <input type="range" min="0" max="100" value="70" id="setting-opacity" />
+      </label>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 place-items-center">
+      <button id="wave" class="wave border p-2 rounded-full">WaveWaveWave!</button>
+      <button id="wave" class="wave border p-2 rounded-full" data-color="#faa">Red Wave!</button>
+      <button id="wave" class="wave border p-2 rounded-full bg-orange-300">Background color</button>
+      <button id="wave" class="wave border p-2 rounded-full" style="background-image: url(https://picsum.photos/200)">Background Image</button>
+    </div>
   </div>
 </body>
 

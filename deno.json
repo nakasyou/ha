@@ -1,7 +1,9 @@
 {
   "name": "@ns/ha",
-  "exports": "./mod.ts",
-  "version": "0.1.2",
+  "exports": {
+    ".": "./mod.ts"
+  },
+  "version": "0.2.0",
   "tasks": {
     "dev": "deno run -A npm:vite --host"
   },
@@ -18,5 +20,14 @@
   "imports": {
     "tailwindcss": "npm:tailwindcss",
     "autoprefixer": "npm:autoprefixer"
+  },
+  "publish": {
+    "exclude": [
+      "dev",
+      ".vite",
+      "index.html",
+      "tailwind.config.js",
+      "postcss.config.js"
+    ]
   }
 }

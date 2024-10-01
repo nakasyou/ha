@@ -13,16 +13,21 @@ type NonUndefinedKeys<T> = {
 /**
  * Settings
  */
-interface Settings {
+export interface Settings {
   /**
    * Target Element
    */
   target?: HTMLElement
 
   /**
-   * Duration (ms)
+   * Duration for Wave (ms)
    */
-  duration?: number
+  waveDuration?: number
+
+  /**
+   * Duration for going out (ms)
+   */
+  gooutDuration?: number
 
   /**
    * Start position
@@ -36,12 +41,19 @@ interface Settings {
    * Color
    */
   color?: string
+
+  /**
+   * First opacity
+   */
+  opacity?: number
 }
+
+type EndWave = () => void
 
 /**
  * Wave interface
  */
-interface Wave<T extends Settings> {
+export interface Wave<T extends Settings> {
   /**
    * Extends settings
    * @param extend settings to extend
@@ -61,15 +73,15 @@ interface Wave<T extends Settings> {
       & {
         [K in keyof Settings]?: Settings[K]
       },
-  ): Promise<void>
+  ): EndWave
 }
 
 /**
- * Create wave
+ * Create waveo
  */
-export const wave = <T extends Settings>(settings?: T): Wave<T> => ({
+export const ha = <T extends Settings>(settings?: T): Wave<T> => ({
   extend<U extends Settings>(extend: U) {
-    return wave(
+    return ha(
       Object.assign({}, settings ?? {}, extend) as Omit<T, keyof U> & U,
     )
   },
@@ -82,7 +94,11 @@ export const wave = <T extends Settings>(settings?: T): Wave<T> => ({
  * Summon wave
  * @internal
  */
-const summonWave = ({ target, duration, pos, color }: Required<Settings>): Promise<void> => {
+const summonWave = (
+  { target, waveDuration, gooutDuration, pos, color, opacity }: Required<
+    Settings
+  >,
+): EndWave => {
   const rect = target.getBoundingClientRect()
   const style = target.style
 
@@ -93,49 +109,46 @@ const summonWave = ({ target, duration, pos, color }: Required<Settings>): Promi
 
   const svg =
     `<svg width="${rect.width}" height="${rect.height}" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="${x}" cy="${y}" r="0" fill="${color}">
-      <animate attributeName="r" from="0" to="${radius}" dur="${duration}ms" fill="freeze" />
-      <animate attributeName="opacity" from="1" to="0" dur="${duration}ms" fill="freeze" />
+    <circle cx="${x}" cy="${y}" opacity="${opacity}" r="0" fill="${color}">
+      <animate attributeName="r" from="0" to="${radius}" dur="${waveDuration}ms" fill="freeze" />
     </circle>
   </svg>`
+
   const svgUrl = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }))
   const targetCSSProp = `url("${svgUrl}")`
 
   style.backgroundImage = targetCSSProp +
-    (style.backgroundImage ? ',' + style.backgroundImage : '')
+    (style.backgroundImage ? `,${style.backgroundImage}` : '')
 
-  target.dataset.haWaveings = (parseInt(target.dataset.haWaveings ?? '0') + 1)
-    .toString()
+  const waveStartTime = Date.now()
 
-  return new Promise((resolve) =>
+  return async () => {
+    await new Promise((resolve) => {
+      setTimeout(() => resolve(null), waveDuration - Date.now() + waveStartTime)
+    })
+    const endSVG =
+      `<svg width="${rect.width}" height="${rect.height}" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="${x}" cy="${y}" r="1000" fill="${color}">
+        <animate attributeName="opacity" from="${opacity}" to="0" dur="${gooutDuration}ms" fill="freeze" />
+      </circle>
+    </svg>`
+    const endSVGUrl = URL.createObjectURL(
+      new Blob([endSVG], { type: 'image/svg+xml' }),
+    )
+    style.backgroundImage = `url("${endSVGUrl}")` +
+      (style.backgroundImage ? `,${style.backgroundImage}` : '')
+
     setTimeout(() => {
-      const waveings = parseInt(target.dataset.haWaveings ?? '0') - 1
-      target.dataset.haWaveings = waveings.toString()
-      target.dataset.haPendings = (target.dataset.haPendings ?? '') + svgUrl +
-        ';'
-
-      if (waveings === 0) {
-        let nextBackgroundImage = style.backgroundImage
-        for (const url of target.dataset.haPendings.split(';')) {
-          const regex = new RegExp(`,? ?url\\("${url}"\\),? ?`)
-
-          nextBackgroundImage = nextBackgroundImage.replace(
-            regex,
-            '',
-          )
-        }
-        style.backgroundImage = nextBackgroundImage
-        target.dataset.haPendings = ''
-      }
-
-      const next = style.backgroundImage.replace(targetCSSProp, '').replace(
-        /^[, ]*/,
-        '',
-      )
-      style.backgroundImage = next
-
+      style.backgroundImage = style.backgroundImage.split(',').filter((v) =>
+        !v.includes(svgUrl)
+      ).join(',')
       URL.revokeObjectURL(svgUrl)
-      resolve(undefined)
-    }, duration)
-  )
+    }, 10)
+    setTimeout(() => {
+      style.backgroundImage = style.backgroundImage.split(',').filter((v) =>
+        !v.includes(endSVGUrl)
+      ).join(',')
+      URL.revokeObjectURL(endSVGUrl)
+    }, gooutDuration)
+  }
 }

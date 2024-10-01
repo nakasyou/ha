@@ -1,27 +1,47 @@
-import { wave } from '../mod.ts'
+import { ha } from '../mod.ts'
 import './style.css'
+const buttons = document.getElementsByClassName('wave')
 
-const waves = document.getElementById('waves')
+const $waveDurationSetting = document.getElementById(
+  'setting-waveDuration',
+) as HTMLInputElement
+const $colorSetting = document.getElementById(
+  'setting-color',
+) as HTMLInputElement
+const $gooutDurationSetting = document.getElementById(
+  'setting-gooutDuration',
+) as HTMLInputElement
+const $opacitySetting = document.getElementById(
+  'setting-opacity',
+) as HTMLInputElement
 
-if (!(waves instanceof HTMLDivElement)) {
-  throw new Error('container is not HTMLDivElement')
-}
-
-const buttons = Array.from(waves.children)
-
-for (const btn of buttons) {
+for (const btn of Array.from(buttons)) {
   if (!(btn instanceof HTMLButtonElement)) {
     throw new Error('button is not HTMLButtonElement')
   }
 
-  const btnWave = wave({
+  const btnWave = ha({
     target: btn,
-    duration: parseInt(btn.dataset.duration ?? '500'),
-    color: btn.dataset.color ?? '#aaa'
+    opacity: 0,
   })
-  btn.onclick = (evt) => {
-    btnWave.do({
-      pos: evt
+  btn.onpointerdown = (evt) => {
+    const endWave = btnWave.do({
+      pos: evt,
+      waveDuration: Number.parseInt($waveDurationSetting.value),
+      gooutDuration: Number.parseInt($gooutDurationSetting.value),
+      color: btn.dataset.color ?? $colorSetting.value,
+      opacity: Number.parseInt($opacitySetting.value) / 100,
     })
+    const end = () => {
+      endWave()
+      btn.removeEventListener('pointerup', end)
+      btn.removeEventListener('pointerleave', end)
+      btn.removeEventListener('pointercancel', end)
+      btn.removeEventListener('pointerout', end)
+    }
+    btn.addEventListener('pointerup', end)
+    btn.addEventListener('pointerleave', end)
+    btn.addEventListener('pointercancel', end)
+    btn.addEventListener('pointerout', end)
   }
 }
