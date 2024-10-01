@@ -1,5 +1,13 @@
 /**
- * Entry point
+ * @example
+ * ```ts
+ * import { ha } from '@ns/ha'
+ *
+ * const close = ha({
+ *   // ...
+ * }).do({})
+ * setTimeout(() => close(), 500)
+ * ```
  * @module
  */
 
